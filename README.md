@@ -11,7 +11,7 @@ AI-powered UI generator. Transforms raw text prompts or Figma nodes into product
 ---
 
 ## 🛠️ Requirements
-* **Python:** 3.10+ (рекомендуется 3.11+ для встроенного `tomllib`).
+* **Python:** Python 3.11+ (или 3.10 с пакетом tomli).
 * **Ollama:** Установленный и запущенный [Ollama](https://ollama.com/) с моделями.
 * **Node.js / Vite (Опционально):** Если планируете дорабатывать фронтенд (в текущей версии фронтенд на чистом HTML/JS).
 
@@ -19,22 +19,30 @@ AI-powered UI generator. Transforms raw text prompts or Figma nodes into product
 
 ## 📦 Installation
 
-### 1. **Клонируйте репозиторий:**
+### 1. Клонируйте репозиторий:
 
 ```bash
 git clone https://github.com/your-username/ai-component-workshop.git
 cd ai-component-workshop
 ```
 
-### 2. **Создайте и активируйте виртуальное окружение:**
+### 2. Установите системные зависимости (для Linux/WSL):
+В некоторых дистрибутивах (например, Ubuntu) модуль venv не идет из коробки. Если вы на Windows, этот шаг можно пропустить.
 
 ```bash
-python -m venv .venv
+sudo apt update
+sudo apt install python3-venv python3-pip -y
+```
+
+### 3. Создайте и активируйте виртуальное окружение:
+
+```bash
+python3 -m venv .venv
 source .venv/bin/activate  # Для Linux/Mac/WSL
 # или .venv\Scripts\activate для Windows
 ```
 
-### 3. **Установите зависимости:**
+### 4. Установите зависимости:
 
 ```bash
 pip install -r requirements.txt
