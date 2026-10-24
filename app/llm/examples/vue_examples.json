@@ -1,0 +1,5 @@
+{
+  "Button": "<script setup lang=\"ts\">\ninterface IButton {\n    disabled?: boolean\n    animate?: string\n}\n\nconst props = withDefaults(defineProps<IButton>(), {\n    animate: 'hover:opacity-55 disabled:opacity-20 duration-200 transition-opacity',\n})\n\nconst emit = defineEmits(['click'])\n</script>\n<template>\n    <button\n        :disabled=\"disabled\"\n        @click=\"emit('click')\"\n        class=\"w-fit rounded-full disabled:opacity-20\"\n        :class=\"{\n            [animate]: !disabled,\n        }\"\n    >\n        <slot />\n    </button>\n</template>",
+  "Checkbox": "<script setup lang=\"ts\">\n// ... (код чекбокса в виде строки) ...",
+  "Card": "<script setup lang=\"ts\">\n// ... (код карточки в виде строки) ..."
+}

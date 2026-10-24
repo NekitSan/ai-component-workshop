@@ -1,0 +1,25 @@
+[ollama.global]
+stream = false
+format = "json"
+default_keep_alive = 0
+
+[ollama.agents.refiner]
+# Использует MODELS[0] (Рефайнер)
+keep_alive = 0
+temperature = 0.1
+num_predict = 1024
+num_ctx = 8192
+
+[ollama.agents.architect]
+# Использует MODELS[0] (Архитектор)
+keep_alive = "5m"
+temperature = 0.2
+num_predict = 2048
+num_ctx = 8192
+
+[ollama.agents.vue]
+# Использует MODELS[1] (Кодер)
+keep_alive = "5m"
+temperature = 0.1
+num_predict = 4096
+num_ctx = 8192

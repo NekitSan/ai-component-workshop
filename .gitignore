@@ -1,0 +1,33 @@
+# 1. Секреты и локальные настройки
+.env
+.env.local
+.env.*.local
+
+# 2. Виртуальное окружение Python
+.venv/
+venv/
+env/
+
+# 3. Python кэш и артефакты сборки
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Кэш тестов Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Кэш линтеров/тайпчекеров
+.mypy_cache/
+.ruff_cache/
+
+# 4. Настройки редакторов (IDE)
+.vscode/
+.idea/
+*.swp
+
+# 5. Специфика вашего проекта (Ollama / LLM)
+app/llm/temps/
+*.log

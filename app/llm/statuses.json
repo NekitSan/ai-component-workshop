@@ -1,0 +1,89 @@
+{
+    "pipeline": {
+        "start": {
+            "percent": 5,
+            "text": "🚀 Запуск многоагентного конвейера..."
+        },
+        "context_init": {
+            "percent": 15,
+            "text": "⚙️ Инициализация входных параметров..."
+        },
+        "figma_request": {
+            "percent": 15,
+            "text": "📡 Запрос структуры компонента Figma по ID: {node_id}..."
+        },
+        "svg_reference": {
+            "percent": 15,
+            "text": "🖼️ Анализ SVG-референса..."
+        },
+        "no_context": {
+            "percent": 15,
+            "text": "📝 Генерация по текстовому описанию (без визуального контекста)..."
+        },
+        "figma_success": {
+            "percent": 25,
+            "text": "✅ Контекст Figma интегрирован."
+        },
+        "figma_not_found": {
+            "percent": 25,
+            "text": "⚠️ Нода не найдена. Базовый промпт."
+        },
+        "figma_error": {
+            "percent": 25,
+            "text": "❌ Ошибка Figma API (Код {code})."
+        },
+        "analysis": {
+            "percent": 30,
+            "text": "📝 [Агент 0] Формирование ТЗ..."
+        },
+        "figma_generation": {
+            "percent": 45,
+            "text": "🧠 [Агент 1] Проектирование геометрии..."
+        },
+        "figma_cleaned": {
+            "percent": 65,
+            "text": "✨ Структура нод построена. Очистка контекста..."
+        },
+        "vue_generation": {
+            "percent": 75,
+            "text": "🤖 [Агент 2] Написание Vue 3 компонента..."
+        },
+        "assembly": {
+            "percent": 95,
+            "text": "🏗️ Сборка финального пакета результатов..."
+        },
+        "done": {
+            "percent": 100,
+            "text": "🎉 Генерация успешно завершена!"
+        }
+    },
+    "agents": {
+        "prompt_optimizer": {
+            "start": "📑 [{agent_name}] Формирование ТЗ...",
+            "success": "✨ [{agent_name}] ТЗ успешно сформировано.",
+            "error": "❌ Сбой [{agent_name}]: {error}. Откат к сырому промпту."
+        },
+        "component_selector": {
+            "start": "🔍 [{agent_name}] Поиск подходящих UI-компонентов...",
+            "success": "✅ [{agent_name}] Найдено компонентов: {count}.",
+            "error": "❌ Сбой [{agent_name}]: {error}."
+        },
+        "json_designer": {
+            "start": "🧠 [{agent_name}] Проектирование JSON-дерева...",
+            "success": "✨ [{agent_name}] JSON-дерево успешно спроектировано.",
+            "error": "❌ Сбой [{agent_name}]: {error}."
+        },
+        "code_generator": {
+            "start": "🤖 [{agent_name}] Генерация кода...",
+            "success": "✨ [{agent_name}] Код успешно сгенерирован.",
+            "error": "❌ Сбой [{agent_name}]: {error}."
+        }
+    },
+    "common": {
+        "missing_prompt": "❌ Ошибка: отсутствует параметр prompt.",
+        "config_loaded": "✅ Конфигурация успешно загружена. Доступно моделей: {count}",
+        "config_error": "❌ Ошибка конфигурации: {error}",
+        "server_started": "🚀 Сервер успешно запущен через единую точку входа run.py",
+        "server_url": "🔗 Веб-интерфейс доступен по ссылке: http://localhost:5555/"
+    }
+}
