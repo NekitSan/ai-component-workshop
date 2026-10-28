@@ -27,7 +27,8 @@ htmlcov/
 .vscode/
 .idea/
 *.swp
+*.excalidraw
 
-# 5. Специфика вашего проекта (Ollama / LLM)
+# 5. Специфика проекта (Ollama / LLM)
 app/llm/temps/
 *.log

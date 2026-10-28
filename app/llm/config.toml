@@ -4,7 +4,7 @@ format = "json"
 default_keep_alive = 0
 
 [ollama.agents.refiner]
-# Использует MODELS[0] (Рефайнер)
+# Использует MODELS[0] (Редактор)
 keep_alive = 0
 temperature = 0.1
 num_predict = 1024
