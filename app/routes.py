@@ -1,7 +1,7 @@
 import copy
 import json
+import os
 
-import requests
 from flask import (
     Blueprint,
     Response,
@@ -18,13 +18,17 @@ from app.agents import (
     refine_user_prompt,
 )
 from app.services import fetch_figma_node
-from app.utils import clean_nodes_for_coder, clean_original_figma_json
+from app.utils import clean_nodes_for_coder
 
 bp = Blueprint('main', __name__)
 
 @bp.route('/', methods=['GET'])
 def index():
     return send_from_directory(current_app.template_folder, 'index.html')
+
+@bp.route('/api/version', methods=['GET'])
+def get_version():
+    return jsonify({"version": os.getenv("APP_VERSION", "0.0.0")})
 
 @bp.route('/favicon.ico')
 def favicon():
@@ -107,8 +111,15 @@ def api_generate():
             optimized_node=optimized_node_structure
         )
 
-        # 4. Агент 1 (Figma)
+        # 4. Агент 1 (Architect)
         yield sse_event("figma_generation")
+
+        # Формируем контексты (Figma / SVG)
+        contexts = {}
+        if optimized_node_structure:
+            contexts["FIGMA_REFERENCE_STRUCTURE"] = optimized_node_structure
+        if svg_ref:
+            contexts["RAW_REFERENCE_SVG_DATA"] = f"```xml\n{svg_ref}\n```"
         
         design_architect = design_architect_nodes(
             ollama_url=cfg.ollama_api_url,
@@ -121,7 +132,7 @@ def api_generate():
             payload_format=cfg.format,
             keep_alive=cfg.architect.keep_alive,
             user_request=user_prompt,
-            reference_svg=svg_ref
+            context_providers=contexts
         )
         
         if not design_architect:

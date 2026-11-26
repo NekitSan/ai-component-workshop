@@ -393,7 +393,7 @@
 
     <header>
         <h1>🤖 UI Component Generation Lab <span class="status-badge">Порт: 5555</span></h1>
-        <div>v1.2 (Multi-Agent System)</div>
+        <div id="app-version" class="text-gray-500 font-mono text-xs">v...</div>
     </header>
 
     <div class="workspace">
@@ -491,6 +491,16 @@
         const jsonOutput = document.getElementById('json-output');
         const historyLog = document.getElementById('history-log');
 
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const res = await fetch('/api/version');
+                const data = await res.json();
+                document.getElementById('app-version').textContent = `v${data.version}`;
+            } catch (e) {
+                console.warn("Не удалось загрузить версию");
+            }
+        })
+
         let currentContextMode = 'none';
 
         function setContextMode(mode) {
@@ -532,129 +542,129 @@
         }
 
         generateBtn.onclick = async () => {
-    const promptText = promptInput.value.trim();
-    let svgText = null;
-    let nodeIdText = null;
+            const promptText = promptInput.value.trim();
+            let svgText = null;
+            let nodeIdText = null;
 
-    if (!promptText) return alert('Пожалуйста, введите ТЗ для генерации!');
-    if (currentContextMode === 'svg') svgText = document.getElementById('svg-ref').value.trim() || null;
-    if (currentContextMode === 'id') {
-        nodeIdText = document.getElementById('node-id-ref').value.trim() || null;
+            if (!promptText) return alert('Пожалуйста, введите ТЗ для генерации!');
+            if (currentContextMode === 'svg') svgText = document.getElementById('svg-ref').value.trim() || null;
+            if (currentContextMode === 'id') {
+                nodeIdText = document.getElementById('node-id-ref').value.trim() || null;
 
-        const match = nodeIdText.match(/(?:node-id=)?(\d+-\d+)/);
-        const nodeId = match ? match[1] : null; 
-        nodeIdText = nodeId
-    }
+                const match = nodeIdText.match(/(?:node-id=)?(\d+-\d+)/);
+                const nodeId = match ? match[1] : null; 
+                nodeIdText = nodeId
+            }
 
-    // Находим элементы нашего нового прогресс-бара
-    const progressBar = document.getElementById('progress-bar');
-    const progressRatio = document.getElementById('progress-ratio');
-    const progressStatus = document.getElementById('progress-status');
+            // Находим элементы нашего нового прогресс-бара
+            const progressBar = document.getElementById('progress-bar');
+            const progressRatio = document.getElementById('progress-ratio');
+            const progressStatus = document.getElementById('progress-status');
 
-    // Блокировка интерфейса
-    generateBtn.disabled = true;
-    promptInput.disabled = true;
-    generateBtn.style.backgroundColor = '#d32f2f'; // Красный цвет блокировки
-    generateBtn.innerText = '⏳ Подключение к ИИ-агентам...';
+            // Блокировка интерфейса
+            generateBtn.disabled = true;
+            promptInput.disabled = true;
+            generateBtn.style.backgroundColor = '#d32f2f'; // Красный цвет блокировки
+            generateBtn.innerText = '⏳ Подключение к ИИ-агентам...';
 
-    // Стартовые заглушки в экраны вывода
-    vueOutput.textContent = '// Агенты запущены.\n// Начинается потоковый расчет в WSL...';
-    jsonOutput.value = '{\n  "status": "Ожидание проектирования слоев..."\n}';
-    if (typeof Prism !== 'undefined') Prism.highlightElement(vueOutput);
+            // Стартовые заглушки в экраны вывода
+            vueOutput.textContent = '// Агенты запущены.\n// Начинается потоковый расчет в WSL...';
+            jsonOutput.value = '{\n  "status": "Ожидание проектирования слоев..."\n}';
+            if (typeof Prism !== 'undefined') Prism.highlightElement(vueOutput);
 
-    // Сброс шкалы прогресс-бара
-    if (progressBar) progressBar.style.width = '0%';
-    if (progressRatio) progressRatio.textContent = '0%';
-    if (progressStatus) progressStatus.textContent = 'Инициализация пайплайна...';
+            // Сброс шкалы прогресс-бара
+            if (progressBar) progressBar.style.width = '0%';
+            if (progressRatio) progressRatio.textContent = '0%';
+            if (progressStatus) progressStatus.textContent = 'Инициализация пайплайна...';
 
-    try {
-        // Отправляем POST-запрос на стриминговый роут
-        const response = await fetch('/api/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                prompt: promptText,
-                svg: svgText,
-                node_id: nodeIdText
-            })
-        });
+            try {
+                // Отправляем POST-запрос на стриминговый роут
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: promptText,
+                        svg: svgText,
+                        node_id: nodeIdText
+                    })
+                });
 
-        if (!response.ok) {
-            const errData = await response.json().catch(() => ({}));
-            throw new Error(errData.error || `Код сервера ${response.status}`);
-        }
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error || `Код сервера ${response.status}`);
+                }
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder("utf-8");
-        let buffer = "";
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder("utf-8");
+                let buffer = "";
 
-        while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
 
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split("\n\n");
-            buffer = lines.pop(); // Хвост оставляем в буфере
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split("\n\n");
+                    buffer = lines.pop(); // Хвост оставляем в буфере
 
-            for (const line of lines) {
-                if (line.startsWith("data: ")) {
-                    const eventData = JSON.parse(line.substring(6));
+                    for (const line of lines) {
+                        if (line.startsWith("data: ")) {
+                            const eventData = JSON.parse(line.substring(6));
 
-                    // 1. ПОЛУЧЕНИЕ ШАГОВ ПРОГРЕССА И ЛОГОВ ОТ БЭКЕНДА
-                    if (eventData.type === 'progress') {
-                        // Динамически обновляем прогресс-бар и текст кнопки
-                        if (progressBar) progressBar.style.width = `${eventData.percent}%`;
-                        if (progressRatio) progressRatio.textContent = `${eventData.percent}%`;
-                        if (progressStatus) progressStatus.textContent = eventData.status;
-                        
-                        generateBtn.innerText = `⏳ [${eventData.percent}%] Обработка...`;
+                            // 1. ПОЛУЧЕНИЕ ШАГОВ ПРОГРЕССА И ЛОГОВ ОТ БЭКЕНДА
+                            if (eventData.type === 'progress') {
+                                // Динамически обновляем прогресс-бар и текст кнопки
+                                if (progressBar) progressBar.style.width = `${eventData.percent}%`;
+                                if (progressRatio) progressRatio.textContent = `${eventData.percent}%`;
+                                if (progressStatus) progressStatus.textContent = eventData.status;
+                                
+                                generateBtn.innerText = `⏳ [${eventData.percent}%] Обработка...`;
 
-                        // Выводим красивую веху в ваш журнал логов
-                        logToUI(`<div><span class="log-time">[${getTime()}]</span> <span class="log-status-working">⚙️</span> ${eventData.status}</div>`);
+                                // Выводим красивую веху в ваш журнал логов
+                                logToUI(`<div><span class="log-time">[${getTime()}]</span> <span class="log-status-working">⚙️</span> ${eventData.status}</div>`);
 
-                    // 2. ОБРАБОТКА КРИТИЧЕСКОЙ ОШИБКИ ИИ
-                    } else if (eventData.type === 'error') {
-                        throw new Error(eventData.text);
+                            // 2. ОБРАБОТКА КРИТИЧЕСКОЙ ОШИБКИ ИИ
+                            } else if (eventData.type === 'error') {
+                                throw new Error(eventData.text);
 
-                    // 3. ФИНАЛЬНЫЙ СБОР ПАКЕТА ДАННЫХ
-                    } else if (eventData.type === 'done') {
-                        const payload = eventData.result.nodes;
+                            // 3. ФИНАЛЬНЫЙ СБОР ПАКЕТА ДАННЫХ
+                            } else if (eventData.type === 'done') {
+                                const payload = eventData.result.nodes;
 
-                        // Выводим отформатированное дерево Figma-нод в JSON окно
-                        jsonOutput.value = JSON.stringify(payload.figma_nodes, null, 4);
+                                // Выводим отформатированное дерево Figma-нод в JSON окно
+                                jsonOutput.value = JSON.stringify(payload.figma_nodes, null, 4);
 
-                        // Чистим и стриппим markdown-теги ```vue из кода
-                        let cleanVueCode = payload.vue_code || '';
-                        cleanVueCode = cleanVueCode.replace(/^```vue\n?/i, '');
-                        cleanVueCode = cleanVueCode.replace(/```\$/g, '');
+                                // Чистим и стриппим markdown-теги ```vue из кода
+                                let cleanVueCode = payload.vue_code || '';
+                                cleanVueCode = cleanVueCode.replace(/^```vue\n?/i, '');
+                                cleanVueCode = cleanVueCode.replace(/```\$/g, '');
 
-                        // Выводим готовый компонент Vue 3
-                        vueOutput.textContent = cleanVueCode || '// Код не сгенерирован';
-                        
-                        if (typeof Prism !== 'undefined') {
-                            Prism.highlightElement(vueOutput);
+                                // Выводим готовый компонент Vue 3
+                                vueOutput.textContent = cleanVueCode || '// Код не сгенерирован';
+                                
+                                if (typeof Prism !== 'undefined') {
+                                    Prism.highlightElement(vueOutput);
+                                }
+
+                                logToUI(`<div><span class="log-time">[${getTime()}]</span> <span class="log-status-success">✅ Успех!</span> Комплект полностью собран и передан в UI.</div>`);
+                            }
                         }
-
-                        logToUI(`<div><span class="log-time">[${getTime()}]</span> <span class="log-status-success">✅ Успех!</span> Комплект полностью собран и передан в UI.</div>`);
                     }
                 }
+
+            } catch (error) {
+                vueOutput.textContent = `❌ Ошибка конвейера автоматизации.\n\nДетали: ${error.message}\nПроверьте консоль WSL терминала.`;
+                jsonOutput.value = JSON.stringify({ "error": error.message }, null, 4);
+                if (typeof Prism !== 'undefined') Prism.highlightElement(vueOutput);
+
+                logToUI(`<div><span class="log-time">[${getTime()}]</span> <span class="log-status-error">💥 Ошибка:</span> ${error.message}</div>`);
+                if (progressStatus) progressStatus.textContent = 'Конвейер аварийно остановлен';
+            } finally {
+                generateBtn.disabled = false;
+                promptInput.disabled = false;
+                generateBtn.style.backgroundColor = 'var(--brand-blue)';
+                generateBtn.innerText = 'Запустить конвейер генерации';
             }
-        }
-
-    } catch (error) {
-        vueOutput.textContent = `❌ Ошибка конвейера автоматизации.\n\nДетали: ${error.message}\nПроверьте консоль WSL терминала.`;
-        jsonOutput.value = JSON.stringify({ "error": error.message }, null, 4);
-        if (typeof Prism !== 'undefined') Prism.highlightElement(vueOutput);
-
-        logToUI(`<div><span class="log-time">[${getTime()}]</span> <span class="log-status-error">💥 Ошибка:</span> ${error.message}</div>`);
-        if (progressStatus) progressStatus.textContent = 'Конвейер аварийно остановлен';
-    } finally {
-        generateBtn.disabled = false;
-        promptInput.disabled = false;
-        generateBtn.style.backgroundColor = 'var(--brand-blue)';
-        generateBtn.innerText = 'Запустить конвейер генерации';
-    }
-};
+        };
 
         const vueClipboard = new ClipboardJS('#vue-copy-btn', {
             text: function () {

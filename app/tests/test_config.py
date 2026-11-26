@@ -73,7 +73,7 @@ temperature = 0.1
     cfg = load_config(toml_path=path, env={"MODELS": "m1"})
 
     assert cfg.refiner.keep_alive == "1h"
-    assert cfg.figma.keep_alive == "5m"
+    assert cfg.architect.keep_alive == "5m"
     assert cfg.vue.keep_alive == "5m"
 
 
@@ -82,8 +82,8 @@ def test_missing_agent_section_gives_defaults(tmp_path):
 
     cfg = load_config(toml_path=path, env={"MODELS": "m1"})
 
-    assert cfg.figma.keep_alive == 0
-    assert cfg.figma.options == {}
+    assert cfg.architect.keep_alive == 0
+    assert cfg.architect.options == {}
     assert cfg.vue.options == {}
 
 
@@ -133,8 +133,8 @@ def test_real_config_toml_is_valid():
     # Проверяем, что у агентов параметры имеют правильный тип (если они заданы)
     if "temperature" in cfg.refiner.options:
         assert isinstance(cfg.refiner.options["temperature"], float), "refiner temperature must be float"
-    if "num_predict" in cfg.figma.options:
-        assert isinstance(cfg.figma.options["num_predict"], int), "figma num_predict must be int"
+    if "num_predict" in cfg.architect.options:
+        assert isinstance(cfg.architect.options["num_predict"], int), "architect num_predict must be int"
         
 # ---------- Ошибки ----------
 
