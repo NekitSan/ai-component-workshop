@@ -19,8 +19,8 @@ def fetch_figma_node(base_url: str, file_key: str, token: str, node_id_ref: str)
     node_id_cleaned = node_id_ref.strip().replace("-", ":")
     
     try:
-        figma_url = f"{cfg.figma_base_url}{cfg.figma_file_key}/nodes?ids={node_id_cleaned}"
-        figma_headers = {"X-Figma-Token": cfg.figma_token}
+        figma_url = f"{base_url}{file_key}/nodes?ids={node_id_cleaned}"
+        figma_headers = {"X-Figma-Token": token}
         figma_res = requests.get(figma_url, headers=figma_headers, timeout=10)
         
         if figma_res.status_code == 200:

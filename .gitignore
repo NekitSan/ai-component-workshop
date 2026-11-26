@@ -1,20 +1,29 @@
-# 1. Секреты и локальные настройки
+# Окружение и секреты
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+*.env
+*.key
+*.pem
+*.crt
 
-# 2. Виртуальное окружение Python
+# Базы данных и временные файлы
+*.sqlite
+*.db
+*.log
+
+# Виртуальное окружение (Python)
 .venv/
 venv/
 env/
 
-# 3. Python кэш и артефакты сборки
+# Кэш Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 
-# Кэш тестов Pytest
+# Мусор от инструментов ИИ и тестов
 .pytest_cache/
 .coverage
 htmlcov/
@@ -23,12 +32,16 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
-# 4. Настройки редакторов (IDE)
+# Системные и настройки IDE
 .vscode/
 .idea/
+.graph-it/
 *.swp
 *.excalidraw
 
-# 5. Специфика проекта (Ollama / LLM)
+# Специфика проекта (Ollama / LLM)
 app/llm/temps/
-*.log
+llm/temps/
+
+# Фронтенд (Vue/Nuxt)
+node_modules/

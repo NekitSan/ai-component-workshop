@@ -1,6 +1,3 @@
-import copy
-
-
 def clean_original_figma_json(raw_node: dict) -> dict:
     """
     Агрессивно удаляет технический шум Figma API, но сохраняет 
